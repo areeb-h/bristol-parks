@@ -123,7 +123,7 @@ export function ParksFooter() {
               <h3 className="font-semibold text-card-foreground">Academic Context</h3>
             </div>
             <div className="space-y-2 text-sm text-muted-foreground leading-relaxed">
-              <p>University of Bristol</p>
+              <p>University of the West of England, Bristol</p>
               <p>Data Visualization Prototype</p>
               <p>Non-commercial academic use</p>
               <motion.p

@@ -1,43 +1,126 @@
+"use client"
+
+// Core React and state management
+import { useState, useMemo, useEffect } from "react"
+
+// UI components from Shadcn/ui
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Trees, Users, MapPin, Award } from "lucide-react"
-import { motion, Variants } from "motion/react"
+import { Button } from "@/components/ui/button"
+
+// Icons from Lucide React
+import { Trees, Users, MapPin, Award, Loader2 } from "lucide-react"
+
+// Motion for animations
+import { motion, Variants, AnimatePresence } from "framer-motion"
+
+// Function to manually parse CSV data without an external library
+function parseCsv(csvData: string): any[] {
+  const lines = csvData.trim().split('\n');
+  const headers = lines[0].split(',').map(header => header.trim());
+  const rows = lines.slice(1).map(line => {
+    const values = line.split(',');
+    return headers.reduce((obj, header, index) => {
+      (obj as any)[header] = values[index].trim();
+      return obj;
+    }, {});
+  });
+  return rows;
+}
 
 export function ParksStats() {
-  const stats = [
-    {
-      title: "Total Parks",
-      value: "127",
-      icon: Trees,
-      description: "Green spaces across Bristol",
-      color: "text-primary",
-      bgColor: "bg-primary/15",
-    },
-    {
-      title: "Total Area",
-      value: "2,847",
-      unit: "hectares",
-      icon: MapPin,
-      description: "Protected green space",
-      color: "text-accent",
-      bgColor: "bg-accent/15",
-    },
-    {
-      title: "Annual Visitors",
-      value: "1.2M",
-      icon: Users,
-      description: "Estimated park usage",
-      color: "text-primary",
-      bgColor: "bg-primary/10",
-    },
-    {
-      title: "Quality Rating",
-      value: "4.2/5",
-      icon: Award,
-      description: "Average park quality",
-      color: "text-accent",
-      bgColor: "bg-accent/10",
-    },
-  ]
+  const [stats, setStats] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Helper function to generate a simulated rating based on data
+  const generateRating = (majorSite: string, area: number): number => {
+    let rating = 3.5;
+    if (majorSite === 'Yes') rating += 0.8;
+    if (area > 10000) rating += 0.4;
+    if (area > 50000) rating += 0.3;
+    return Math.min(Math.round(rating * 10) / 10, 5.0);
+  };
+
+  useEffect(() => {
+    const loadAndCalculateStats = async () => {
+      try {
+        setLoading(true);
+
+        const response = await fetch('/Parks_and_green_spaces.csv');
+        if (!response.ok) {
+          throw new Error(`Failed to fetch data: ${response.statusText}`);
+        }
+        const csvData = await response.text();
+        const parsedData = parseCsv(csvData);
+
+        let totalParks = 0;
+        let totalAreaSqM = 0;
+        let totalRatingSum = 0;
+
+        // Filter and process data
+        const filteredData = parsedData.filter((row: any) => row.SITE_NAME);
+
+        filteredData.forEach(row => {
+          totalParks++;
+          const area = parseFloat(row.FEATURE_AREA) || 0;
+          const majorSite = row.MAJOR_SITE || 'No';
+
+          totalAreaSqM += area;
+          totalRatingSum += generateRating(majorSite, area);
+        });
+
+        const totalAreaHa = (totalAreaSqM / 10000).toFixed(0);
+        const averageRating = (totalRatingSum / totalParks).toFixed(1);
+
+        const newStats = [
+          {
+            title: "Total Parks",
+            value: totalParks.toLocaleString(),
+            icon: Trees,
+            description: "Green spaces across Bristol",
+            color: "text-primary",
+            bgColor: "bg-primary/15",
+          },
+          {
+            title: "Total Area",
+            value: totalAreaHa,
+            unit: "hectares",
+            icon: MapPin,
+            description: "Protected green space",
+            color: "text-accent",
+            bgColor: "bg-accent/15",
+          },
+          {
+            title: "Annual Visitors",
+            value: "1.2M",
+            color: "text-primary",
+            bgColor: "bg-primary/10",
+          },
+          {
+            title: "Quality Rating",
+            value: `${averageRating}/5`,
+            icon: Award,
+            description: "Average park quality",
+            color: "text-accent",
+            bgColor: "bg-accent/10",
+          },
+        ];
+        setStats(newStats);
+
+      } catch (error) {
+        console.error('Error loading parks data:', error);
+        // Fallback to mock data or show error state
+        setStats([
+          { title: "Total Parks", value: "N/A", icon: Trees, description: "Could not load data", color: "text-gray-400", bgColor: "bg-gray-100" },
+          { title: "Total Area", value: "N/A", icon: MapPin, description: "Could not load data", color: "text-gray-400", bgColor: "bg-gray-100" },
+          { title: "Annual Visitors", value: "N/A", icon: Users, description: "Could not load data", color: "text-gray-400", bgColor: "bg-gray-100" },
+          { title: "Quality Rating", value: "N/A", icon: Award, description: "Could not load data", color: "text-gray-400", bgColor: "bg-gray-100" },
+        ]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadAndCalculateStats();
+  }, []);
 
   const containerVariants: Variants = {
     hidden: { opacity: 0, y: 20 },
@@ -63,6 +146,19 @@ export function ParksStats() {
         ease: [0.22, 1, 0.36, 1]
       }
     }
+  }
+
+  if (loading) {
+    return (
+      <Card className="bg-card shadow-none border-border/60">
+        <CardContent className="flex items-center justify-center py-12">
+          <div className="text-center space-y-4">
+            <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto" />
+            <p className="text-muted-foreground">Calculating statistics...</p>
+          </div>
+        </CardContent>
+      </Card>
+    );
   }
 
   return (
