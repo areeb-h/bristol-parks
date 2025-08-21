@@ -37,17 +37,17 @@ interface BristolPark {
 }
 
 // A mapping for colors based on the FEAT_ID types
-// Updated to use the actual FEAT_ID values from the CSV
 const featIdToColorMap: { [key: string]: string } = {
-  'Open Space': 'bg-green-100 text-green-700 border-green-200',
-  'Parks and Green Space Site': 'bg-primary/10 text-primary border-primary/20',
-  'Local Park': 'bg-purple-100 text-purple-700 border-purple-200',
-  'Recreation Ground': 'bg-blue-100 text-blue-700 border-blue-200',
-  'Formal Garden': 'bg-emerald-100 text-emerald-700 border-emerald-200',
-  'Playing Field': 'bg-rose-100 text-rose-700 border-rose-200',
-  'Allotments': 'bg-lime-100 text-lime-700 border-lime-200',
-  'Woodland': 'bg-indigo-100 text-indigo-700 border-indigo-200',
-  'Community Garden': 'bg-cyan-100 text-cyan-700 border-cyan-200',
+  // Light mode classes | Dark mode classes
+  'Open Space': 'bg-green-100 text-green-700 border-green-200 dark:bg-green-950 dark:text-green-200 dark:border-green-900',
+  'Parks and Green Space Site': 'bg-primary/10 text-primary border-primary/20 dark:bg-primary/30 dark:text-primary-foreground dark:border-primary/50',
+  'Local Park': 'bg-purple-100 text-purple-700 border-purple-200 dark:bg-purple-950 dark:text-purple-200 dark:border-purple-900',
+  'Recreation Ground': 'bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-950 dark:text-blue-200 dark:border-blue-900',
+  'Formal Garden': 'bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-900',
+  'Playing Field': 'bg-rose-100 text-rose-700 border-rose-200 dark:bg-rose-950 dark:text-rose-200 dark:border-rose-900',
+  'Allotments': 'bg-lime-100 text-lime-700 border-lime-200 dark:bg-lime-950 dark:text-lime-200 dark:border-lime-900',
+  'Woodland': 'bg-indigo-100 text-indigo-700 border-indigo-200 dark:bg-indigo-950 dark:text-indigo-200 dark:border-indigo-900',
+  'Community Garden': 'bg-cyan-100 text-cyan-700 border-cyan-200 dark:bg-cyan-950 dark:text-cyan-200 dark:border-cyan-900',
 };
 
 // A list of the park types that will be used for filters. This is now dynamic.
@@ -399,9 +399,9 @@ export function ParksSearch() {
                   <Search className="h-4 w-4 text-primary" />
                 </div>
                 <span>Bristol Parks & Green Spaces</span>
-                <Badge variant="secondary" className="ml-auto">
+                {/* <Badge variant="secondary" className="ml-auto">
                   Real Data • {parks.length} Parks
-                </Badge>
+                </Badge> */}
               </CardTitle>
             </motion.div>
           </CardHeader>
