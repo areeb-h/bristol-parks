@@ -2,6 +2,8 @@
 
 // Core React and state management
 import { useState, useMemo, useEffect } from "react"
+// Add the papaparse import for robust CSV handling
+import Papa from "papaparse"
 
 // UI components from Shadcn/ui
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -13,19 +15,8 @@ import { Trees, Users, MapPin, Award, Loader2 } from "lucide-react"
 // Motion for animations
 import { motion, Variants, AnimatePresence } from "framer-motion"
 
-// Function to manually parse CSV data without an external library
-function parseCsv(csvData: string): any[] {
-  const lines = csvData.trim().split('\n');
-  const headers = lines[0].split(',').map(header => header.trim());
-  const rows = lines.slice(1).map(line => {
-    const values = line.split(',');
-    return headers.reduce((obj, header, index) => {
-      (obj as any)[header] = values[index].trim();
-      return obj;
-    }, {});
-  });
-  return rows;
-}
+// The manual parseCsv function has been removed.
+// It is no longer needed as we are using papaparse.
 
 export function ParksStats() {
   const [stats, setStats] = useState<any[]>([]);
@@ -50,7 +41,17 @@ export function ParksStats() {
           throw new Error(`Failed to fetch data: ${response.statusText}`);
         }
         const csvData = await response.text();
-        const parsedData = parseCsv(csvData);
+
+        // Use Papaparse for robust CSV parsing
+        const parsed = Papa.parse(csvData, {
+          header: true,
+          dynamicTyping: true,
+          skipEmptyLines: true,
+          transformHeader: (header: string) => header.trim()
+        });
+
+        // Ensure data is an array before processing
+        const parsedData = parsed.data as any[];
 
         let totalParks = 0;
         let totalAreaSqM = 0;
@@ -92,6 +93,8 @@ export function ParksStats() {
           {
             title: "Annual Visitors",
             value: "1.2M",
+            icon: Users,
+            description: "To major parks (est.)",
             color: "text-primary",
             bgColor: "bg-primary/10",
           },

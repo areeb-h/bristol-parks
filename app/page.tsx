@@ -7,7 +7,11 @@ import { ParksFooter } from "@/components/parks-footer"
 import { ThemeToggle } from "@/components/theme-toggle"
 import dynamic from 'next/dynamic'
 
-const ParksMap = dynamic(() => import("@/components/parks-map").then(mod => ({ default: mod.ParksMap })), {
+// const ParksMap = dynamic(() => import("@/components/parks-map").then(mod => ({ default: mod.ParksMap })), {
+//   ssr: false,
+//   loading: () => <div className="h-96 bg-muted animate-pulse rounded-lg" />
+// })
+const ParksMap = dynamic(() => import("@/components/parks-map").then(({ ParksMap }) => ParksMap), {
   ssr: false,
   loading: () => <div className="h-96 bg-muted animate-pulse rounded-lg" />
 })
