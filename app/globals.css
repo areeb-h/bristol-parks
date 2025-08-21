@@ -1,0 +1,162 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* Natural light theme - bright and clean like a sunny day */
+  --background: oklch(0.99 0.01 120);
+  --foreground: oklch(0.15 0.02 140);
+  --card: oklch(0.98 0.01 115);
+  --card-foreground: oklch(0.15 0.02 140);
+  --popover: oklch(0.99 0.01 120);
+  --popover-foreground: oklch(0.15 0.02 140);
+
+  /* Primary: Fresh, vibrant forest green - much brighter and cleaner */
+  --primary: oklch(0.55 0.16 150);
+  --primary-foreground: oklch(0.98 0.01 115);
+
+  /* Secondary: Soft contrast green */
+  --secondary: oklch(0.92 0.03 125);
+  --secondary-foreground: oklch(0.2 0.02 140);
+
+  /* Muted: A more readable grey-green */
+  --muted: oklch(0.9 0.02 130);
+  --muted-foreground: oklch(0.3 0.02 135);
+
+  /* Accent: A vibrant, emerald green */
+  --accent: oklch(0.62 0.18 155);
+  --accent-foreground: oklch(0.98 0.01 115);
+
+  /* Destructive: Natural autumn red */
+  --destructive: oklch(0.55 0.18 15);
+  --destructive-foreground: oklch(0.98 0.01 115);
+
+  --border: oklch(0.85 0.02 125);
+  --input: oklch(0.96 0.01 120);
+  --ring: oklch(0.55 0.16 150);
+
+  --radius: 0.75rem;
+}
+
+.dark {
+  /* Dark theme: Sleek, high-contrast evening look */
+  --background: oklch(0.08 0.01 140);
+  --foreground: oklch(0.95 0.02 120);
+  --card: oklch(0.16 0.02 135);
+  --card-foreground: oklch(0.95 0.02 120);
+  --popover: oklch(0.08 0.01 140);
+  --popover-foreground: oklch(0.95 0.02 120);
+
+  /* Primary: Bright, glowing green for dark theme */
+  --primary: oklch(0.68 0.18 150);
+  --primary-foreground: oklch(0.08 0.01 140);
+
+  /* Secondary: Dark moss */
+  --secondary: oklch(0.2 0.02 135);
+  --secondary-foreground: oklch(0.9 0.02 120);
+
+  /* Muted: A darker, more legible grey-green */
+  --muted: oklch(0.15 0.01 130);
+  --muted-foreground: oklch(0.6 0.02 125);
+
+  /* Accent: Bright emerald for dark theme */
+  --accent: oklch(0.72 0.20 155);
+  --accent-foreground: oklch(0.08 0.01 140);
+
+  /* Destructive: Autumn fire */
+  --destructive: oklch(0.6 0.2 20);
+  --destructive-foreground: oklch(0.95 0.02 120);
+
+  --border: oklch(0.2 0.01 135);
+  --input: oklch(0.15 0.01 130);
+  --ring: oklch(0.68 0.18 150);
+}
+
+@theme inline {
+  --font-sans: var(--font-geist);
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+@layer utilities {
+
+  .glass-header,
+  .glass-header-dark {
+    @apply bg-background/20 backdrop-blur-3xl;
+    box-shadow: none;
+    /* Shadow removed for a modern, clean look */
+  }
+
+  /* Nature-inspired text effects - updated with better colors */
+  .text-gradient-park {
+    background: linear-gradient(135deg,
+        oklch(0.55 0.16 150),
+        oklch(0.62 0.18 155),
+        oklch(0.58 0.15 148));
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  /* Smooth transitions for theme switching */
+  html {
+    transition: color-scheme 0.3s ease;
+  }
+
+  /* Focus styles for accessibility */
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-ring;
+  }
+
+  /* Custom scrollbar for webkit browsers */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-muted;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-primary/30 rounded-lg;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-primary/50;
+  }
+}
